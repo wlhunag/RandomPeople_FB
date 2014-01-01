@@ -18,4 +18,4 @@ setup(
         version = "0.5",
         description = u"亂數抽籤程式",
         options = {'build_exe': {'include_files':includefiles}},
-        executables = [Executable("Random_choice_portable_v2.pyw" ,base = base, icon = "Flaticon_1430.ico")])
+        executables = [Executable("Random_choice.pyw" ,base = base, icon = "Flaticon_1430.ico")])
