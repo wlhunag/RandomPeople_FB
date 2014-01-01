@@ -1,5 +1,7 @@
 #-*- coding: utf-8-*-
+
 __author__ = 'Aaron'
+import win32com.client
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os
@@ -218,8 +220,18 @@ class Example(QWidget):
         h1.addWidget(self.checkB)
 
         self.goButton = QPushButton("&GO")
+        self.goButton.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_G))
+        self.goButton.setToolTip(u"開始抽抽樂 (Ctrl + G )")
+        icong = QIcon()
+        icong.addPixmap(QPixmap("icons/dice.png"), QIcon.Normal, QIcon.Off)
+        self.goButton.setIcon(icong)
         self.goButton.setFocus()
         self.clearButton = QPushButton("&Clear")
+        self.clearButton.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_F))
+        self.clearButton.setToolTip(u"清除...(Ctrl + F)")
+        iconc = QIcon()
+        iconc.addPixmap(QPixmap("icons/eraser.png"), QIcon.Normal, QIcon.Off)
+        self.clearButton.setIcon(iconc)
 
         h2 = QHBoxLayout()
         h2.setMargin(10)
@@ -254,7 +266,7 @@ class Example(QWidget):
 
         self.setLayout(layout)
         self.setWindowTitle(u"抽抽樂")
-        self.setWindowIcon(QIcon("Flaticon_1430.png"))
+        self.setWindowIcon(QIcon("icons/Flaticon_1430.png"))
         self.resize(650, 600)
 
 
@@ -295,13 +307,13 @@ class Example(QWidget):
 
             if text in self.shown:
                 self.random_choice(numbers)
+                self.shown.append(text)
+                self.spinbox.setFocus(True)
             else:
                 self.shown.append(text)
                 self.updateTableView(whichClass,text)
-            self.shown.append(text)
-            self.spinbox.setValue(1)
-            self.remember += 1
-            self.spinbox.setFocus(True)
+                speaker = win32com.client.Dispatch('SAPI.SpVoice')
+                speaker.Speak(u"中獎的是，{0}!".format(whichClass[text]))
 
     def deloldtable(self):
 
@@ -311,6 +323,9 @@ class Example(QWidget):
 
 
     def export(self):
+        #依照系統編碼而定
+        encoding = sys.getfilesystemencoding()
+        print encoding
 
         allrows = self.viewResultTable.rowCount()
         result = u"學號\t姓名\n"
@@ -321,9 +336,9 @@ class Example(QWidget):
         import tempfile
 
         with tempfile.NamedTemporaryFile(mode='w+t', suffix='.txt', delete=False) as temp:
-            temp.write(result.encode('utf-8'))
-            des = (temp.name).decode('utf-8')
-
+            temp.write(result.encode(encoding))
+            des = (temp.name).decode(encoding)
+        #以下這行可能只有windows 適用
         os.system(des)
 
 
