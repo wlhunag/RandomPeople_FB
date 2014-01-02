@@ -57,7 +57,10 @@ opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 opener.addheaders = [('Referer', 'http://www.facebook.com')]
 
+
 folderpath = os.path.join(os.getcwdu(), 'pic')
+if not os.path.exists(folderpath):
+    os.mkdir(folderpath)
 
 #這邊改線程數量，不知改高一點會不會怎樣，剛剛測試一切正常~
 thread_number = 40
