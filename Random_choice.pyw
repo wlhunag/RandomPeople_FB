@@ -240,10 +240,10 @@ class Example(QWidget):
 
         with tempfile.NamedTemporaryFile(mode='w+t', suffix='.txt', delete=False) as temp:
             temp.write(result.encode(encoding))
-            des = (temp.name).decode(encoding)
-        #以下這行可能只有windows 適用
-        #TODO 找跨平台方法
-        os.system(des)
+            #下面不要改成unicode 就可以避免UnicodeEncode Error
+            des = (temp.name)#.decode(encoding)
+        import subprocess
+        subprocess.call(des,shell=True)
 
 
     def Likesound(self):
