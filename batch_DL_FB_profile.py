@@ -73,13 +73,17 @@ def download(sequence):
 
     #儲存聲音的資料夾
     for i in list(class_fb_dict)[sequence:total:thread_number]:
-        #key 怎麼寫？
         newloc = os.path.join(folderpath, class_dict[class_fb_dict[i]].decode("utf-8") + u".jpg")
-        with open(newloc, "wb") as fh:
-            url = base + i + pref
-            ufile = urllib2.urlopen(url).read()
-            fh.write(ufile)
-            #data = urllib.urlretrieve(base + i.split('\t')[0] + pref,newloc)
+        try:
+
+            with open(newloc, "wb") as fh:
+                url = base + i + pref
+                ufile = urllib2.urlopen(url).read()
+                fh.write(ufile)
+        except IOError as e:
+            #怎麼把錯誤訊息傳回主程式？
+            return e
+
 
     print "thread %d run time:" % sequence
     print time() - t
@@ -104,8 +108,8 @@ def main():
     for i in tl:
         i.start()           # 依次運行線程
 
-
-if __name__ == main():
+#這行不要打錯了，免得一import 就執行
+if __name__ == "__main__":
     main()
 
 
