@@ -2,8 +2,10 @@
 __author__ = 'Aaron'
 
 from time import time
-import threading
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 import os
+import sys
 
 class_fb_dict = {"100003608826587": u"黃建程", "100001458104025": u"廖彥誠", "100000194374197": u"黃子瑋",
                  "100002000012788": u"許育菁", "100000106297579": u"李昕錞", "100000030683988": u"連欣慈",
@@ -63,10 +65,68 @@ if not os.path.exists(folderpath):
     os.mkdir(folderpath)
 
 #這邊改線程數量，不知改高一點會不會怎樣，剛剛測試一切正常~
-thread_number = 40
+thread_number = 50
+
+
+class MyThreading(QThread):
+    def __init__(self, id):
+        QThread.__init__(self)
+        self.name = id
+
+    def run(self):
+        download(self.name)
+
+
+class my_progress_bar(QWidget):
+
+    def __init__(self, parent=None):
+        super(my_progress_bar, self).__init__(parent)
+        layout = QVBoxLayout(self)
+
+        self.label = QLabel()
+        self.label.setText(u"從 Facebook 下載全班大頭貼...")
+        self.progressBar = QProgressBar(self)
+        self.okbuttun = QPushButton()
+        self.okbuttun.setText(u"請稍後...")
+        self.okbuttun.setEnabled(False)
+        self.progressBar.setRange(0,100)
+        self.progressBar.setMinimumWidth(250)
+        self.progressBar.setValue(float(0))
+        self.progressBar.valueChanged.connect(self.download_finished)
+        layout.addWidget(self.label)
+        layout.addWidget(self.progressBar)
+        layout.addWidget(self.okbuttun)
+        self.setWindowTitle(u"大頭貼下載器")
+        self.setWindowIcon(QIcon("icons/dl.png"))
+        self.tl = []            # 定義列表
+        for i in range(thread_number):
+            #如果不轉str，會因為0而產生ValueError: invalid literal for int() with base 10: 'Thread-1'
+            i = str(i)
+            self.t = MyThreading(i)
+            self.tl.append(self.t)          # 將類對象添加到列表中
+
+        for i in self.tl:
+            i.finished.connect(self.starter) #線程下載成功後emit 訊號+2
+            i.start()
+
+    def starter(self):
+        oldvalue = float(self.progressBar.value())
+        self.progressBar.setValue(oldvalue+2)
+
+    def download_finished(self):
+        if self.progressBar.value() == 100:
+            self.label.setText(u"最新的大頭貼下載完成")
+            self.okbuttun.setEnabled(True)
+            self.okbuttun.setText(u"完成")
+            iconl = QIcon()
+            iconl.addPixmap(QPixmap("icons/check.png"), QIcon.Normal, QIcon.Off)
+            self.okbuttun.setIcon(iconl)
+            self.okbuttun.clicked.connect(self.close)
 
 
 def download(sequence):
+    #把download 移出class 竟然就可以跑了~
+
     t = time()
     sequence = int(sequence)
     total = len(class_dict)
@@ -74,44 +134,22 @@ def download(sequence):
     #儲存聲音的資料夾
     for i in list(class_fb_dict)[sequence:total:thread_number]:
         newloc = os.path.join(folderpath, class_dict[class_fb_dict[i]].decode("utf-8") + u".jpg")
-        try:
 
-            with open(newloc, "wb") as fh:
-                url = base + i + pref
-                ufile = urllib2.urlopen(url).read()
-                fh.write(ufile)
-        except IOError as e:
-            #怎麼把錯誤訊息傳回主程式？
-            return e
+        with open(newloc, "wb") as fh:
+            url = base + i + pref
+            ufile = urllib2.urlopen(url).read()
+            fh.write(ufile)
+
+    print "thread {0} run time:{1:.2f}  sec".format(sequence,time() - t)
 
 
-    print "thread %d run time:" % sequence
-    print time() - t
 
 
-class MyThreading(threading.Thread):
-    def __init__(self, id):
-        threading.Thread.__init__(self, name=id)
-
-    def run(self):
-        download(self.name)
-
-
-def main():
-    tl = []            # 定義列表
-    for i in range(thread_number):
-        #如果不轉str，會因為0而產生ValueError: invalid literal for int() with base 10: 'Thread-1'
-        i = str(i)
-        t = MyThreading(i)
-        tl.append(t)          # 將類對象添加到列表中
-
-    for i in tl:
-        i.start()           # 依次運行線程
-
-#這行不要打錯了，免得一import 就執行
 if __name__ == "__main__":
-    main()
-
+    app = QApplication(sys.argv)
+    window = my_progress_bar()
+    window.show()
+    sys.exit(app.exec_())
 
     #2013-11-19 without threading
     #total run time:
