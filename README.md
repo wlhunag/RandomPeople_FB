@@ -17,7 +17,7 @@ RandomPeople_FB
 
 ![github](https://github.com/wlhunag/RandomPeople_FB/raw/master/icons/demo.png "亂數主畫面")
 
-![github](https://github.com/wlhunag/RandomPeople_FB/raw/master/icons/fbdownloader "FACEBOOK 下載器")
+![github](https://github.com/wlhunag/RandomPeople_FB/raw/master/icons/fbdownloader.png "FACEBOOK 下載器")
 
 安裝：
 ---
