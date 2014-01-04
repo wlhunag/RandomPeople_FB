@@ -13,11 +13,11 @@ RandomPeople_FB
 現在寫成小程式
 
 使用前請先更新FACEBOOK 大頭貼
+![github](https://github.com/wlhunag/RandomPeople_FB/raw/master/icons/fbdownloader.png "FACEBOOK 下載器")
 
 
 ![github](https://github.com/wlhunag/RandomPeople_FB/raw/master/icons/demo.png "亂數主畫面")
 
-![github](https://github.com/wlhunag/RandomPeople_FB/raw/master/icons/fbdownloader.png "FACEBOOK 下載器")
 
 安裝：
 ---
