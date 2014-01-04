@@ -1,7 +1,6 @@
 #-*- coding: utf-8-*-
 
 __author__ = 'Aaron'
-# import win32com.client
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import random
@@ -33,7 +32,7 @@ ClassB = {"9930045": u"何宗霖", "9930046": u"吳俊昇", "9930047": u"林庭�
           "9940023": u"張禾昀", "9952032": u"楊君皓", "9970531": u"黃書儀", "9977005": u"謝欣諭"}
 
 numB = ['9930051', '9930065', '9930053', '9930052', '9930055', '9930054', '9930048', '9930049', '9930046', '9930047',
-        '9930063', '9930045', '9930068', '9930079', '9930078', '9940023', '9930074', '9977005', '9930060',
+        '9930063', '9930045', '9930068', '9930079', '9930078', '9940023', '9930074', '9977005', '9930060', '9930069',
         '9930076', '9930061', '9952032', '9930088', '9930081', '9930057', '9930077', '9930082', '9930083', '9930080',
         '9930056', '9930062', '9930087', '9930084', '9930085', '9930059', '9970531', '9930070', '9930072']
 
@@ -63,7 +62,8 @@ allnumber = ['9930051', '9930076', '9930039', '9930038', '9930055', '9930054', '
              '9930029', '9930045', '9930060', '9930061', '9930048', '9930049', '9930046', '9930021', '9930022',
              '9930023', '9930024', '9930025', '9930026', '9930027', '9930063', '9930040', '9930041', '9970531',
              '9943050', '9930068', '9930079', '9930052', '9930077', '9930081', '9930015', '9930082', '9930017',
-             '9930016', '9930011', '9930010', '9930013', '9930012', '9940023', '9930059', '9930019', '9930080']
+             '9930016', '9930011', '9930010', '9930013', '9930012', '9940023', '9930059', '9930019', '9930080',
+             '9930069']
 
 class Example(QWidget):
     def __init__(self, parent=None):
@@ -175,42 +175,71 @@ class Example(QWidget):
         self.Like.clicked.connect(lambda: self.Likesound())
         self.bad.clicked.connect(lambda: self.badsound())
         self.FBButton.clicked.connect(lambda: self.downloadthread())
+        self.viewResultTable.itemChanged.connect(lambda: self.status_update())
+        self.checkA.stateChanged.connect(lambda: self.status_update())
+        self.checkB.stateChanged.connect(lambda: self.status_update())
+
+    def status_update(self):
+        if self.checkA.isChecked() and self.checkB.isChecked():
+            self.whichClass = ClassC
+            random.shuffle(allnumber)
+            self.includes = allnumber
+        elif self.checkA.isChecked() and not self.checkB.isChecked():
+            self.whichClass = ClassA
+            random.shuffle(numA)
+            self.includes = numA
+        elif not self.checkA.isChecked() and self.checkB.isChecked():
+            self.whichClass = ClassB
+            random.shuffle(numB)
+            self.includes = numB
+        self.spinbox.setMaximum(len(self.includes))
+        self.spinbox.setValue(1)
 
 
     def random_choice(self, numbers):
-
         if self.checkA.isChecked() and self.checkB.isChecked():
-            whichClass = ClassC
+            self.whichClass = ClassC
             random.shuffle(allnumber)
-            includes = allnumber
+            self.includes = allnumber
         elif self.checkA.isChecked() and not self.checkB.isChecked():
-            whichClass = ClassA
+            self.whichClass = ClassA
             random.shuffle(numA)
-            includes = numA
+            self.includes = numA
         elif not self.checkA.isChecked() and self.checkB.isChecked():
-            whichClass = ClassB
+            self.whichClass = ClassB
             random.shuffle(numB)
-            includes = numB
+            self.includes = numB
 
         for i in range(numbers):
-            random.shuffle(includes)
+            random.shuffle(self.includes)
             try:
-                text = includes.pop()
+                text = self.includes.pop()
+                try:
+                    allnumber.remove(text)
+                except ValueError:
+                    pass
+                try:
+                    numA.remove(text)
+                except ValueError:
+                    pass
+                try:
+                    numB.remove(text)
+                except ValueError:
+                    pass
             except IndexError:
                 QMessageBox.warning(self,u"下面沒人了", u"都抽完了！\n請重新啟動程式吧~")
                 break
-            print(type(text),text)
+            # print(type(text),text)
+            # print("lense of allnumber is %d" % len(self.includes))
 
-            if text in self.shown:
-                self.random_choice(numbers)
-                self.shown.append(text)
-                self.spinbox.setFocus(True)
-            else:
-                self.shown.append(text)
-                self.updateTableView(whichClass,text)
-                #TODO看如何用multi_thread ，以減少程式延遲
-                # speaker = win32com.client.Dispatch('SAPI.SpVoice')
-                # speaker.Speak(u"中獎的是，{0}!".format(whichClass[text]))
+            self.shown.append(text)
+            self.updateTableView(self.whichClass,text)
+
+            if len(self.includes) == 0:
+                QMessageBox.warning(self, u"下面沒人了", u"都抽完了！下面沒人了！\n請重新啟動程式吧~")
+                break
+            self.spinbox.setMaximum(len(self.includes))
+            self.spinbox.setValue(1)
 
     def deloldtable(self):
         for i in reversed(range(self.row + 1)):
