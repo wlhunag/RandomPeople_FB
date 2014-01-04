@@ -4,6 +4,7 @@ __author__ = 'Aaron'
 # import win32com.client
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import random
 import os
 import sys
 
@@ -178,8 +179,6 @@ class Example(QWidget):
 
     def random_choice(self, numbers):
 
-        import random
-
         if self.checkA.isChecked() and self.checkB.isChecked():
             whichClass = ClassC
             random.shuffle(allnumber)
@@ -192,7 +191,6 @@ class Example(QWidget):
             whichClass = ClassB
             random.shuffle(numB)
             includes = numB
-
 
         for i in range(numbers):
             random.shuffle(includes)
