@@ -1,8 +1,10 @@
 @echo off
-@setup_cxfreeze.py build
-@echo 接下來要壓縮亂數程式
+setup_cxfreeze.py build
 
-"C:\Program Files\7-Zip\7z.exe" a -tzip build\亂數程式.zip build\exe.win32-2.7
+@echo 接下來要壓縮亂數程式
+pause
+
+"C:\Program Files\7-Zip\7z.exe" a -tzip build\抽抽樂-D99.zip build\exe.win32-2.7
 @echo 接下來要製作安裝檔案
 
 @echo
