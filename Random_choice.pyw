@@ -242,7 +242,7 @@ class Example(QWidget):
             self.spinbox.setValue(1)
 
     def deloldtable(self):
-        for i in reversed(range(self.row + 1)):
+        for i in reversed(range(self.row)):
             self.viewResultTable.removeRow(i)
 
     def downloadthread(self):
