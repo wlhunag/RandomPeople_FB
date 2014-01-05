@@ -232,6 +232,9 @@ class Example(QWidget):
 
     def export(self):
         #依照系統編碼而定
+        isMac = sys.platform.startswith("darwin")
+        isWin = sys.platform.startswith("win32")
+        print sys.platform
         encoding = sys.getfilesystemencoding()
         print encoding
 
@@ -249,8 +252,11 @@ class Example(QWidget):
             des = (temp.name)#.decode(encoding)
 
         import subprocess
-        #用Popen 就不用等關閉文字檔以後才能執行GUI主程式了
-        subprocess.Popen(des,shell=True)
+        if isWin:
+            #用Popen 就不用等關閉文字檔以後才能執行GUI主程式了
+            subprocess.Popen(des,shell=True)
+        elif isMac:
+            subprocess.Popen(['open','-t',des])
 
 
     def Likesound(self):
