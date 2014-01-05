@@ -1,4 +1,6 @@
-@echo off
+@echo off 
+rmdir build /s /q
+pause
 setup_cxfreeze.py build
 
 @echo 接下來要壓縮亂數程式
