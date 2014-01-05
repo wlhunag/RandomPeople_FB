@@ -261,6 +261,7 @@ class Example(QWidget):
 
     def Likesound(self):
         #TODO 也許多加一點聲音
+        #TODO why on sound on Mac
         QSound.play('Sound\\crowdapplause2.wav')
 
     def badsound(self):
