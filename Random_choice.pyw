@@ -193,44 +193,24 @@ class Example(QWidget):
             random.shuffle(numB)
             self.includes = numB
         self.spinbox.setMaximum(len(self.includes))
-        self.spinbox.setValue(1)
 
 
     def random_choice(self, numbers):
-        if self.checkA.isChecked() and self.checkB.isChecked():
-            self.whichClass = ClassC
-            random.shuffle(allnumber)
-            self.includes = allnumber
-        elif self.checkA.isChecked() and not self.checkB.isChecked():
-            self.whichClass = ClassA
-            random.shuffle(numA)
-            self.includes = numA
-        elif not self.checkA.isChecked() and self.checkB.isChecked():
-            self.whichClass = ClassB
-            random.shuffle(numB)
-            self.includes = numB
+
+        self.status_update()
 
         for i in range(numbers):
             random.shuffle(self.includes)
             try:
                 text = self.includes.pop()
-                try:
-                    allnumber.remove(text)
-                except ValueError:
-                    pass
-                try:
-                    numA.remove(text)
-                except ValueError:
-                    pass
-                try:
-                    numB.remove(text)
-                except ValueError:
-                    pass
+                for nlist in [allnumber,numA,numB]:
+                    try:
+                        nlist.remove(text)
+                    except ValueError:
+                        pass
             except IndexError:
                 QMessageBox.warning(self,u"下面沒人了", u"都抽完了！\n請重新啟動程式吧~")
                 break
-            # print(type(text),text)
-            # print("lense of allnumber is %d" % len(self.includes))
 
             self.shown.append(text)
             self.updateTableView(self.whichClass,text)
@@ -242,15 +222,13 @@ class Example(QWidget):
             self.spinbox.setValue(1)
 
     def deloldtable(self):
-        for i in reversed(range(self.row)):
+        for i in reversed(range(self.row+1)):
             self.viewResultTable.removeRow(i)
 
     def downloadthread(self):
         import Qbatch_DL_FB_profile
         self.dl = Qbatch_DL_FB_profile.my_progress_bar()
         self.dl.show()
-
-
 
     def export(self):
         #依照系統編碼而定
@@ -269,8 +247,10 @@ class Example(QWidget):
             temp.write(result.encode(encoding))
             #下面不要改成unicode 就可以避免UnicodeEncode Error
             des = (temp.name)#.decode(encoding)
+
         import subprocess
-        subprocess.call(des,shell=True)
+        #用Popen 就不用等關閉文字檔以後才能執行GUI主程式了
+        subprocess.Popen(des,shell=True)
 
 
     def Likesound(self):
