@@ -226,6 +226,7 @@ class Example(QWidget):
             self.viewResultTable.removeRow(i)
 
     def downloadthread(self):
+        #TODO fix:為何有時候只下載78個檔案？是否增加一個檢查視窗，下載闕漏的檔案？
         import Qbatch_DL_FB_profile
         self.dl = Qbatch_DL_FB_profile.my_progress_bar()
         self.dl.show()
@@ -260,8 +261,8 @@ class Example(QWidget):
 
 
     def Likesound(self):
-        #TODO 也許多加一點聲音
-        #TODO why on sound on Mac
+        #TODO 也許多加一點聲音，不知為何WIN上可撥WAV不能播MP3,MAC目前知道不能播WAV
+        #TODO fix: why no sound on Mac
         QSound.play('Sound\\crowdapplause2.wav')
 
     def badsound(self):

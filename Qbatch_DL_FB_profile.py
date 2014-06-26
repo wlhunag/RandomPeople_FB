@@ -53,7 +53,7 @@ import urllib2
 
 base = r"https://graph.facebook.com/"
 pref = r"/picture?width=9999&height=9999"
-#ex:https://graph.facebook.com/louisa.tsou.7/picture?width=9999&height=9999
+#ex:https://graph.facebook.com/skywingmyth/picture?width=9999&height=9999
 
 opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
