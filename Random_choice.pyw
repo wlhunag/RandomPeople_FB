@@ -246,6 +246,7 @@ class Example(QWidget):
             result += unicode(items) + "\t" + dict(ClassA.items() + ClassB.items())[str(items)] + "\n"
 
         import tempfile
+        #print "hello"
 
         with tempfile.NamedTemporaryFile(mode='w+t', suffix='.txt', delete=False) as temp:
             temp.write(result.encode(encoding))
